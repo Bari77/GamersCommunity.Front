@@ -181,6 +181,5 @@ features/forum/
 
 ---
 
-🧠 **Author:** Initial architecture by [Bari + ChatGPT (GPT-5)]
-📅 **Last update:** November 2025
-💡 _For any developer onboarding to the GamersCommunity project._
+📅 **Last updated:** November 2025  
+🧠 **Maintainer:** GamersCommunity Frontend Team

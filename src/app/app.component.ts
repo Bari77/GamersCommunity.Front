@@ -1,6 +1,9 @@
 import { Component, signal } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 
+/**
+ * Entry app component
+ */
 @Component({
     selector: "app",
     imports: [RouterOutlet],
