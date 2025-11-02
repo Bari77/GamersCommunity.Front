@@ -3,15 +3,15 @@ import { Routes } from "@angular/router";
 export const appRoutes: Routes = [
     {
         path: "",
-        redirectTo: "/auth/login",
+        redirectTo: "/home",
         pathMatch: "full",
     },
     {
-        path: "auth",
-        loadChildren: () => import("./features/auth/auth.routes").then((r) => r.authRoutes),
+        path: "home",
+        loadChildren: () => import("./features/home/home.routes").then((r) => r.homeRoutes),
     },
     {
         path: "**",
-        redirectTo: "/auth/login",
+        redirectTo: "/home",
     },
 ];

@@ -1,4 +1,4 @@
-import { UserDto } from "../../features/auth/models/user.dto";
+import { UserDto } from "../dto/user.dto";
 
 export class User {
     public constructor(public id: number) {}

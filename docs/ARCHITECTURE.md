@@ -28,9 +28,30 @@ src/
  │   ├── core/
  │   │   ├── guards/
  │   │   ├── interceptors/
- │   │   ├── services/
- │   │   ├── stores/
- │   │   └── utils/
+ │   │   ├── layout/
+ │   │   │   └── header
+ │   │   │       └── components/
+ │   │   │           └── header/
+ │   │   └── models/
+ │   │
+ │   ├── features/
+ │   │   ├── home/
+ │   │   │   ├── components/
+ │   │   │   ├── models/
+ │   │   │   ├── pages/
+ │   │   │   │   └── /home-container
+ │   │   │   ├── stores/
+ │   │   │   │   └── home.store.ts
+ │   │   │   └── home.routes.ts
+ │   │   └── games/
+ │   │       ├── dto/
+ │   │       │   └── games.dto.ts
+ │   │       ├── models/
+ │   │       │   └── games.model.ts
+ │   │       ├── services/
+ │   │       │   └── games.service.ts
+ │   │       └── stores/
+ │   │           └── games.store.ts
  │   │
  │   ├── shared/
  │   │   ├── components/
@@ -39,26 +60,11 @@ src/
  │   │   ├── models/
  │   │   └── utils/
  │   │
- │   ├── features/
- │   │   ├── auth/
- │   │   │   ├── login/
- │   │   │   │   ├── login.component.ts
- │   │   │   │   ├── login.component.html
- │   │   │   │   └── login.component.scss
- │   │   │   ├── register/
- │   │   │   ├── stores/
- │   │   │   │   └── auth.store.ts
- │   │   │   ├── auth.routes.ts
- │   │   │   └── auth.service.ts
- │   │   ├── forum/
- │   │   ├── chat/
- │   │   └── profile/
- │   │
- │   ├── app.routes.ts
- │   ├── app.config.ts
- │   ├── app.component.ts
  │   ├── app.component.html
- │   └── app.component.scss
+ │   ├── app.component.scss
+ │   ├── app.component.ts
+ │   ├── app.config.ts
+ │   └── app.routes.ts
  │
  └── environments/
 ```
@@ -72,20 +78,23 @@ src/
 ```ts
 @Component({
   standalone: true,
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],
+  selector: 'app-home-container',
+  templateUrl: './home-container.component.html',
+  styleUrls: ['./home-container.component.scss'],
   imports: [CommonModule, FormsModule],
 })
-export class LoginComponent { ... }
+export class HomeContainer { ... }
 ```
 
 ### ✅ Standalone Routes
 
 ```ts
-export const authRoutes: Routes = [
-    { path: "login", loadComponent: () => import("./login/login.component").then((m) => m.LoginComponent) },
-    { path: "register", loadComponent: () => import("./register/register.component").then((m) => m.RegisterComponent) },
+export const homeRoutes: Routes = [
+    {
+        path: "home",
+        loadComponent: () =>
+            import("./pages/home-container/home-container.component").then((m) => m.HomeContainerComponent),
+    },
 ];
 ```
 
@@ -97,17 +106,19 @@ export const authRoutes: Routes = [
 
 ```ts
 @Injectable({ providedIn: "root" })
-export class AuthStore {
-    public readonly user = computed(() => this._user());
-    public readonly isLoggedIn = computed(() => !!this._user());
-    private _user = signal<User | null>(null);
+export class UsersStore {
+    public readonly user = computed(() => this.$user());
+    public readonly isLoggedIn = computed(() => !!this.$user());
+
+    private readonly authService = inject(UsersService);
+    private $user = signal<User | null>(null);
 
     login(user: User) {
-        this._user.set(user);
+        this.$user.set(user);
     }
 
     logout() {
-        this._user.set(null);
+        this.$user.set(null);
     }
 }
 ```
@@ -116,40 +127,48 @@ export class AuthStore {
 
 ## 📦 Naming Conventions
 
-| Type         | File Naming                      | Example                     | Associated Class       |
-| ------------ | -------------------------------- | --------------------------- | ---------------------- |
-| Component    | `xxx.component.ts`               | `user-profile.component.ts` | `UserProfileComponent` |
-| Directive    | `xxx.directive.ts`               | `auto-focus.directive.ts`   | `AutoFocusDirective`   |
-| Pipe         | `xxx.pipe.ts`                    | `truncate.pipe.ts`          | `TruncatePipe`         |
-| Service      | `xxx.service.ts`                 | `auth.service.ts`           | `AuthService`          |
-| Store        | `xxx.store.ts`                   | `auth.store.ts`             | `AuthStore`            |
-| Model / Type | `xxx.model.ts` or `xxx.types.ts` | `user.model.ts`             | `User`                 |
-| Utility      | `xxx.utils.ts`                   | `date.utils.ts`             | Pure utility functions |
+| Type        | File Naming                    | Example                     | Associated Class       |
+| ----------- | ------------------------------ | --------------------------- | ---------------------- |
+| Component   | `xxx.component.ts`             | `user-profile.component.ts` | `UserProfileComponent` |
+| Directive   | `xxx.directive.ts`             | `auto-focus.directive.ts`   | `AutoFocusDirective`   |
+| Pipe        | `xxx.pipe.ts`                  | `truncate.pipe.ts`          | `TruncatePipe`         |
+| Service     | `xxx.service.ts`               | `auth.service.ts`           | `AuthService`          |
+| Store       | `xxx.store.ts`                 | `auth.store.ts`             | `AuthStore`            |
+| Model / Dto | `xxx.model.ts` or `xxx.dto.ts` | `user.model.ts`             | `User`                 |
+| Utility     | `xxx.utils.ts`                 | `date.utils.ts`             | Pure utility functions |
 
 ---
 
 ## 🧭 Feature Design Guidelines
 
-### ✅ Small Feature
+### ✅ Small Feature without page and routes
 
 ```
-features/auth/
- ├── login/
- ├── register/
- ├── stores/
- ├── auth.routes.ts
- └── auth.service.ts
+features/games/
+ ├── dto/
+ │   └── games.dto.ts
+ ├── models/
+ │   └── games.model.ts
+ ├── services/
+ │   └── games.service.ts
+ └── stores/
+     └── games.store.ts
 ```
 
-### ✅ Complex Feature
+### ✅ Complex Feature with page and routes
 
 ```
-features/forum/
- ├── pages/
+features/home/
  ├── components/
+ ├── models/
+ ├── pages/
+ │   └── /home-container
+ │      ├── home-container.component.html
+ │      ├── home-container.component.scss
+ │      └── home-container.component.ts
  ├── stores/
- ├── forum.routes.ts
- └── forum.service.ts
+ │   └── home.store.ts
+ └── home.routes.ts
 ```
 
 ---
@@ -160,8 +179,9 @@ features/forum/
 | ------------- | ------------------------------ | ---------------------------------------- |
 | `/components` | Generic reusable UI components | `modal`, `button-primary`, `loader`      |
 | `/directives` | Reusable directives            | `debounce-click`, `auto-focus`           |
-| `/pipes`      | Utility pipes                  | `truncate`, `timeago`                    |
 | `/models`     | Global interfaces and types    | `user.model.ts`, `api-response.model.ts` |
+| `/pipes`      | Utility pipes                  | `truncate`, `timeago`                    |
+| `/services`   | Global service type            | `base.service.ts`                        |
 | `/utils`      | Pure utility functions         | `format-date.utils.ts`                   |
 
 ---
