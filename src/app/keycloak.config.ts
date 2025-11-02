@@ -5,9 +5,9 @@ import {
     createInterceptorCondition,
     IncludeBearerTokenCondition,
     INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
-    withAutoRefreshToken,
     AutoRefreshTokenService,
     UserActivityService,
+    withAutoRefreshToken,
 } from "keycloak-angular";
 
 function createUrlPatternFromApiUrl(apiUrl: string): RegExp {
@@ -28,15 +28,15 @@ export const provideKeycloakAngular = (): EnvironmentProviders =>
             clientId: environment.idpClientId,
         },
         initOptions: {
-            onLoad: "check-sso",
+            onLoad: "login-required",
             silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`,
-            checkLoginIframe: true,
+            checkLoginIframe: false,
             redirectUri: `${window.location.origin}/`,
         },
         features: [
             withAutoRefreshToken({
                 onInactivityTimeout: "logout",
-                sessionTimeout: 1000,
+                sessionTimeout: 600_000,
             }),
         ],
         providers: [

@@ -44,13 +44,13 @@ export abstract class BaseService {
     }
 
     private getURL(url: string | null = null): string {
-        let result = `${environment.apiUrl}`;
-        if (this.baseUrlService) {
-            result += `${this.baseUrlService}`;
+        const base = new URL(environment.apiUrl);
+        const parts = [this.baseUrlService, url].filter(Boolean);
+
+        for (const part of parts) {
+            base.pathname = `${base.pathname.replace(/\/+$/, "")}/${part!.replace(/^\/+/, "")}`;
         }
-        if (url) {
-            result += `/${url}`;
-        }
-        return result;
+
+        return base.toString().replace(/\/+$/, "");
     }
 }

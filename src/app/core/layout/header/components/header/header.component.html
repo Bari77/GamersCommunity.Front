@@ -3,29 +3,16 @@
         <div class="left">
             <img src="favicon.ico" alt="Logo" class="logo" />
 
-            <nb-form-field class="ml-sm">
-                <input
-                    [(ngModel)]="search"
-                    (keyup.enter)="doSearch()"
-                    type="text"
-                    i18n-placeholder="@@core.search"
-                    placeholder="Search"
-                    nbInput
-                />
-                <button nbSuffix nbButton ghost (click)="doSearch()">
-                    <nb-icon
-                        icon="search-outline"
-                        pack="eva"
-                        i18n-aria-label="@@core.search"
-                        aria-label="Search"
-                    ></nb-icon>
-                </button>
-            </nb-form-field>
+            <nb-search type="rotate-layout"></nb-search>
         </div>
 
         <div class="right">
             @if (usersStore.isLoggedIn()) {
-                <nb-user name="John Doe" title="Engineer"></nb-user>
+                <nb-user
+                    [name]="usersStore.user()?.nickname!"
+                    [picture]="usersStore.user()?.avatarUrl!"
+                    size="large"
+                ></nb-user>
             } @else {
                 <button nbButton ghost (click)="doLogin()">
                     <nb-icon

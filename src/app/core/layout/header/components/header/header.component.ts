@@ -8,6 +8,8 @@ import {
     NbIconModule,
     NbInputModule,
     NbLayoutModule,
+    NbSearchModule,
+    NbSearchService,
     NbUserModule,
 } from "@nebular/theme";
 
@@ -22,6 +24,7 @@ import {
         NbInputModule,
         NbIconModule,
         NbUserModule,
+        NbSearchModule,
     ],
     templateUrl: "./header.component.html",
     styleUrl: "./header.component.scss",
@@ -29,14 +32,15 @@ import {
 export class HeaderComponent implements OnInit {
     public readonly gameStore = inject(GamesStore);
     public readonly usersStore = inject(UsersStore);
+    public readonly searchService = inject(NbSearchService);
     public search = model<string>();
 
     public async ngOnInit(): Promise<void> {
         await this.gameStore.init();
-    }
 
-    public doSearch(): void {
-        console.log("Execute search", this.search());
+        this.searchService.onSearchSubmit().subscribe((data: any) => {
+            console.log(data.term);
+        });
     }
 
     public async doLogin(): Promise<void> {
