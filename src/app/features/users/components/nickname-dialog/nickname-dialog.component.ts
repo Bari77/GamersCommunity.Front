@@ -20,6 +20,7 @@ export class NicknameDialogComponent {
 
     public submit(): void {
         if (this.form.invalid) return;
+
         this.dialogRef.close(this.form.value.nickname);
     }
 

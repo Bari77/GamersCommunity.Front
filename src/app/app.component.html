@@ -1,13 +1,17 @@
-<nb-layout>
-    <nb-layout-header fixed>
-        <app-header></app-header>
-    </nb-layout-header>
+@if (isLoading()) {
+    <app-loading-screen></app-loading-screen>
+} @else {
+    <nb-layout>
+        <nb-layout-header fixed>
+            <app-header></app-header>
+        </nb-layout-header>
 
-    <nb-layout-column>
-        <router-outlet />
-    </nb-layout-column>
+        <nb-layout-column>
+            <router-outlet />
+        </nb-layout-column>
 
-    <nb-layout-footer fixed>
-        <app-footer></app-footer>
-    </nb-layout-footer>
-</nb-layout>
+        <nb-layout-footer fixed>
+            <app-footer></app-footer>
+        </nb-layout-footer>
+    </nb-layout>
+}

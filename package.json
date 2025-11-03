@@ -26,6 +26,7 @@
         "@angular/forms": "20.3.9",
         "@angular/platform-browser": "20.3.9",
         "@angular/router": "20.3.9",
+        "@nebular/auth": "^16.0.0",
         "@nebular/eva-icons": "16.0.0",
         "@nebular/theme": "16.0.0",
         "keycloak-angular": "20.0.0",

@@ -1,20 +1,48 @@
-<nb-layout-header fixed>
+<nb-layout-header fixed [nbSpinner]="usersStore.loading()">
     <div class="header-content">
         <div class="left">
-            <img src="favicon.ico" alt="Logo" class="logo" />
+            <img
+                (click)="goToHome()"
+                nbTooltip="Home"
+                i18n-nbTooltip="@@core.home"
+                nbTooltipPlacement="bottom"
+                src="favicon.ico"
+                alt="Logo"
+                class="logo"
+            />
 
-            <nb-search type="rotate-layout"></nb-search>
+            <nb-search
+                nbTooltip="Search"
+                i18n-nbTooltip="@@core.search"
+                nbTooltipPlacement="bottom"
+                type="rotate-layout"
+            ></nb-search>
         </div>
 
         <div class="right">
             @if (usersStore.isLoggedIn()) {
+                <div
+                    [nbTooltip]="copied() ? 'Copied' : 'Copy'"
+                    [nbTooltipStatus]="copied() ? 'success' : 'control'"
+                    (click)="copyToClipboard()"
+                    (mouseleave)="copied.set(false)"
+                    i18n-nbTooltip="{{copied() ? '@@core.copied' : '@@core.copy'}}"
+                    nbTooltipPlacement="bottom"
+                    class="nickname-container"
+                >
+                    <span class="nickname">{{ usersStore.user()?.nickname! }}</span>
+                    <span class="discriminator">{{ usersStore.discriminator() }}</span>
+                </div>
                 <nb-user
-                    [name]="usersStore.user()?.nickname!"
                     [picture]="usersStore.user()?.avatarUrl!"
+                    [nbContextMenu]="usersStore.menuItems()"
+                    nbContextMenuTag="header-user"
+                    nbContextMenuTrigger="hover"
+                    showName="false"
                     size="large"
                 ></nb-user>
             } @else {
-                <button nbButton ghost (click)="doLogin()">
+                <button (click)="goToLogin()" nbButton ghost>
                     <nb-icon
                         icon="power-outline"
                         pack="eva"

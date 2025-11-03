@@ -1,7 +1,19 @@
+* {
+    font-family: "Orbitron", sans-serif !important;
+}
+
 .ml-sm {
     margin-left: 1rem;
 }
 
 .flex-end {
     justify-content: flex-end;
+}
+
+input {
+    margin: 0 0 1rem 0;
+}
+
+nb-card-header > * {
+    margin: 0 0.5rem;
 }

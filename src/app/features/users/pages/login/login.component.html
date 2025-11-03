@@ -1,0 +1,19 @@
+<nb-auth-block>
+    <nb-card>
+        <nb-card-header>
+            <nb-icon icon="lock-outline"></nb-icon>
+            <span i18n="@@login.title">Login</span>
+        </nb-card-header>
+
+        <nb-card-body>
+            <button (click)="login()" status="primary" i18n="@@login.action.login" nbButton fullWidth>
+                Log in with Keycloak
+            </button>
+        </nb-card-body>
+
+        <nb-card-footer>
+            <span i18n="@@login.anyAccount">Any account ?</span>
+            <a routerLink="/users/signup" status="primary" i18n="@@login.action.signup" ghost>Sign up</a>
+        </nb-card-footer>
+    </nb-card>
+</nb-auth-block>

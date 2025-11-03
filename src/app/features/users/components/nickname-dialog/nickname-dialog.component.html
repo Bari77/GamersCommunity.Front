@@ -7,12 +7,12 @@
         <form [formGroup]="form" (ngSubmit)="submit()">
             <div class="form-group">
                 <input
-                    nbInput
-                    fullWidth
                     i18n-placeholder="@@users.nicknameDialog.placeholder"
                     placeholder="Nickname"
                     formControlName="nickname"
                     maxlength="50"
+                    nbInput
+                    fullWidth
                 />
                 <p class="error">
                     @if (form.controls.nickname.hasError("required")) {
@@ -32,7 +32,15 @@
     </nb-card-body>
 
     <nb-card-footer class="flex justify-end gap-2">
-        <button nbButton ghost status="basic" (click)="cancel()">Cancel</button>
-        <button nbButton status="primary" [disabled]="form.invalid" (click)="submit()">Confirm</button>
+        <button (click)="cancel()" i18n="@@users.nicknameDialog.cancel" status="basic" nbButton ghost>Cancel</button>
+        <button
+            [disabled]="form.invalid"
+            (click)="submit()"
+            i18n="@@users.nicknameDialog.confirm"
+            status="primary"
+            nbButton
+        >
+            Confirm
+        </button>
     </nb-card-footer>
 </nb-card>
