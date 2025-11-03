@@ -15,6 +15,11 @@ export const appRoutes: Routes = [
         loadChildren: () => import("./features/users/users.routes").then((r) => r.usersRoutes),
     },
     {
+        path: "offline",
+        loadComponent: () =>
+            import("@core/layout/splash/components/offline/offline.component").then((m) => m.OfflineComponent),
+    },
+    {
         path: "**",
         redirectTo: "/home",
     },

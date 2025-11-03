@@ -1,4 +1,4 @@
-import { GameDto } from "../../games/dto/game.dto";
+import { GameDto } from "./game.dto";
 
 export interface GameTypeDto {
     id: number;

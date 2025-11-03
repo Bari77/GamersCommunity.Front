@@ -1,4 +1,4 @@
-import { GameDto } from "@features/games/dto/game.dto";
+import { GameDto } from "../dto/game.dto";
 
 export class Game {
     public constructor(

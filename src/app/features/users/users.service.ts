@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
-import { UserDto } from "./dto/user.dto";
 import { BaseService } from "@shared/services/base.service";
 import { Observable } from "rxjs";
-import { User } from "./models/user.model";
 import { LoadRequestDto } from "./dto/load.dto";
+import { UserDto } from "./dto/user.dto";
+import { User } from "./models/user.model";
 
 @Injectable({ providedIn: "root" })
 export class UsersService extends BaseService {

@@ -1,15 +1,15 @@
 import { Component, inject, OnInit, signal } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
-import { NbLayoutModule } from "@nebular/theme";
-import { HeaderComponent } from "@core/layout/header/components/header/header.component";
 import { FooterComponent } from "@core/layout/footer/components/footer/footer.component";
-import { LoadingScreenComponent } from "@shared/components/loading-screen/loading-screen.component";
+import { HeaderComponent } from "@core/layout/header/components/header/header.component";
+import { LoadingComponent } from "@core/layout/splash/components/loading/loading.component";
 import { UsersStore } from "@features/users/stores/users.store";
+import { NbLayoutModule } from "@nebular/theme";
 
 @Component({
     standalone: true,
     selector: "app",
-    imports: [RouterOutlet, NbLayoutModule, HeaderComponent, FooterComponent, LoadingScreenComponent],
+    imports: [RouterOutlet, NbLayoutModule, HeaderComponent, FooterComponent, LoadingComponent],
     templateUrl: "./app.component.html",
     styleUrl: "./app.component.scss",
 })
@@ -21,6 +21,6 @@ export class AppComponent implements OnInit {
     public ngOnInit(): void {
         setTimeout(() => {
             this.isLoading.set(false);
-        }, 2500);
+        }, 5000);
     }
 }

@@ -15,6 +15,7 @@ import {
     NbSearchModule,
     NbSearchService,
     NbSpinnerModule,
+    NbToastrService,
     NbTooltipModule,
     NbUserModule,
 } from "@nebular/theme";
@@ -47,6 +48,7 @@ export class HeaderComponent implements OnInit {
     public readonly usersStore = inject(UsersStore);
     public readonly searchService = inject(NbSearchService);
     public readonly router = inject(Router);
+    public toastr = inject(NbToastrService);
 
     public search = model<string>();
     public copied = model<boolean>(false);

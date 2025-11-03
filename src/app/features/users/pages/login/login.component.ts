@@ -1,7 +1,7 @@
 import { Component, inject } from "@angular/core";
-import { NbCardModule, NbButtonModule, NbIconModule, NbLayoutModule, NbAlertModule } from "@nebular/theme";
-import { UsersStore } from "../../stores/users.store";
 import { NbAuthModule } from "@nebular/auth";
+import { NbAlertModule, NbButtonModule, NbCardModule, NbIconModule, NbLayoutModule } from "@nebular/theme";
+import { UsersStore } from "../../stores/users.store";
 
 @Component({
     standalone: true,

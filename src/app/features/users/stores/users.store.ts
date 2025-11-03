@@ -1,12 +1,12 @@
 import { computed, inject, Injectable, signal } from "@angular/core";
-import { NbDialogService, NbMenuItem, NbMenuService } from "@nebular/theme";
+import { Router } from "@angular/router";
 import { NbAuthJWTToken, NbAuthService, NbTokenService } from "@nebular/auth";
-import { UsersService } from "../users.service";
-import { User } from "../models/user.model";
-import { NicknameDialogComponent } from "../components/nickname-dialog/nickname-dialog.component";
+import { NbDialogService, NbMenuItem, NbMenuService } from "@nebular/theme";
 import { JwtUtils } from "@shared/utils/jwt.utils";
 import { filter, finalize, map } from "rxjs";
-import { Router } from "@angular/router";
+import { NicknameDialogComponent } from "../components/nickname-dialog/nickname-dialog.component";
+import { User } from "../models/user.model";
+import { UsersService } from "../users.service";
 
 @Injectable({ providedIn: "root" })
 export class UsersStore {

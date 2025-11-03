@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { Observable } from "rxjs";
-import { GameType } from "../models/gameType.model";
 import { GameTypeDto } from "../dto/gameType.dto";
+import { GameType } from "../models/gameType.model";
 
 @Injectable({ providedIn: "root" })
 export class GameTypesService extends BaseService {

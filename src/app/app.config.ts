@@ -6,19 +6,11 @@ import {
 } from "@angular/core";
 import { provideRouter } from "@angular/router";
 
-import { appRoutes } from "./app.routes";
-import { HTTP_INTERCEPTORS, provideHttpClient } from "@angular/common/http";
-import {
-    NbThemeModule,
-    NbLayoutModule,
-    NbDialogModule,
-    NbCardModule,
-    NbButtonModule,
-    NbInputModule,
-    NbIconModule,
-    NbMenuModule,
-} from "@nebular/theme";
-import { NbEvaIconsModule } from "@nebular/eva-icons";
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors } from "@angular/common/http";
+import { provideAnimations } from "@angular/platform-browser/animations";
+import { AuthGuard } from "@core/guards/auth.guard";
+import { UnauthGuard } from "@core/guards/unauth.guard";
+import { errorInterceptor } from "@core/interceptors/error.interceptor";
 import {
     NbAuthJWTInterceptor,
     NbAuthJWTToken,
@@ -26,10 +18,21 @@ import {
     NbOAuth2AuthStrategy,
     NbOAuth2ResponseType,
 } from "@nebular/auth";
+import { NbEvaIconsModule } from "@nebular/eva-icons";
+import {
+    NbButtonModule,
+    NbCardModule,
+    NbDialogModule,
+    NbGlobalPhysicalPosition,
+    NbIconModule,
+    NbInputModule,
+    NbLayoutModule,
+    NbMenuModule,
+    NbThemeModule,
+    NbToastrModule,
+} from "@nebular/theme";
 import { environment } from "environments/environment";
-import { AuthGuard } from "@core/guards/auth.guard";
-import { provideAnimations } from "@angular/platform-browser/animations";
-import { UnauthGuard } from "@core/guards/unauth.guard";
+import { appRoutes } from "./app.routes";
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -39,12 +42,17 @@ export const appConfig: ApplicationConfig = {
         }),
         provideAnimations(),
         provideRouter(appRoutes),
-        provideHttpClient(),
+        provideHttpClient(withInterceptors([errorInterceptor])),
         importProvidersFrom(
             // Nebular UI
             NbThemeModule.forRoot({ name: "cosmic" }),
             NbDialogModule.forRoot(),
             NbMenuModule.forRoot(),
+            NbToastrModule.forRoot({
+                duration: 5000,
+                destroyByClick: true,
+                position: NbGlobalPhysicalPosition.TOP_RIGHT,
+            }),
             NbLayoutModule,
             NbEvaIconsModule,
             NbCardModule,
