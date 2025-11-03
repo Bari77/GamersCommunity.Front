@@ -2,9 +2,9 @@
     <div class="header-content">
         <div class="left">
             <img
-                (click)="goToHome()"
+                (click)="redirect('home')"
                 nbTooltip="Home"
-                i18n-nbTooltip="@@core.home"
+                i18n-nbTooltip="@@core.header.home"
                 nbTooltipPlacement="bottom"
                 src="favicon.ico"
                 alt="Logo"
@@ -13,10 +13,23 @@
 
             <nb-search
                 nbTooltip="Search"
-                i18n-nbTooltip="@@core.search"
+                i18n-nbTooltip="@@core.header.search"
                 nbTooltipPlacement="bottom"
                 type="rotate-layout"
             ></nb-search>
+            @if (!gamesStore.loading()) {
+                <button
+                    [nbPopover]="gamesMenuTemplate"
+                    nbPopoverTrigger="hover"
+                    nbPopoverPlacement="bottom"
+                    i18n="@@core.header.games"
+                    nbButton
+                >
+                    Games
+                </button>
+            } @else {
+                <button [nbSpinner]="gamesStore.loading()" i18n="@@core.header.games" nbButton>Games</button>
+            }
         </div>
 
         <div class="right">
@@ -26,27 +39,25 @@
                     [nbTooltipStatus]="copied() ? 'success' : 'control'"
                     (click)="copyToClipboard()"
                     (mouseleave)="copied.set(false)"
-                    i18n-nbTooltip="{{copied() ? '@@core.copied' : '@@core.copy'}}"
+                    i18n-nbTooltip="{{copied() ? '@@core.header.copied' : '@@core.header.copy'}}"
                     nbTooltipPlacement="bottom"
                     class="nickname-container"
                 >
                     <span class="nickname">{{ usersStore.user()?.nickname! }}</span>
                     <span class="discriminator">{{ usersStore.discriminator() }}</span>
                 </div>
-                <nb-user
-                    [picture]="usersStore.user()?.avatarUrl!"
+                <app-avatar
+                    [src]="usersStore.user()?.avatarUrl"
                     [nbContextMenu]="usersStore.menuItems()"
                     nbContextMenuTag="header-user"
                     nbContextMenuTrigger="hover"
-                    showName="false"
-                    size="large"
-                ></nb-user>
+                ></app-avatar>
             } @else {
-                <button (click)="goToLogin()" nbButton ghost>
+                <button (click)="redirect('users/login')" nbButton ghost>
                     <nb-icon
                         icon="power-outline"
                         pack="eva"
-                        i18n-aria-label="@@core.login"
+                        i18n-aria-label="@@core.header.login"
                         aria-label="Login"
                     ></nb-icon>
                 </button>
@@ -54,3 +65,22 @@
         </div>
     </div>
 </nb-layout-header>
+
+<ng-template #gamesMenuTemplate>
+    <div class="custom-menu">
+        @for (group of gamesStore.gameMenu(); track group.title) {
+            <div class="menu-group">
+                <div class="menu-group-title">{{ group.title }}</div>
+
+                @for (item of group.children; track item.title) {
+                    <div (click)="redirect(item.url!)" class="menu-item" nbButton ghost>
+                        @if (item.icon) {
+                            <img [src]="item.icon" width="20" height="20" class="menu-icon" />
+                        }
+                        <span>{{ item.title }}</span>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</ng-template>

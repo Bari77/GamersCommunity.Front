@@ -10,12 +10,15 @@ import {
     NbIconModule,
     NbInputModule,
     NbLayoutModule,
+    NbMenuModule,
+    NbPopoverModule,
     NbSearchModule,
     NbSearchService,
     NbSpinnerModule,
     NbTooltipModule,
     NbUserModule,
 } from "@nebular/theme";
+import { AvatarComponent } from "@shared/components/avatar/avatar.component";
 
 @Component({
     standalone: true,
@@ -32,12 +35,15 @@ import {
         NbTooltipModule,
         NbContextMenuModule,
         NbSpinnerModule,
+        NbMenuModule,
+        NbPopoverModule,
+        AvatarComponent,
     ],
     templateUrl: "./header.component.html",
     styleUrl: "./header.component.scss",
 })
 export class HeaderComponent implements OnInit {
-    public readonly gameStore = inject(GamesStore);
+    public readonly gamesStore = inject(GamesStore);
     public readonly usersStore = inject(UsersStore);
     public readonly searchService = inject(NbSearchService);
     public readonly router = inject(Router);
@@ -46,23 +52,19 @@ export class HeaderComponent implements OnInit {
     public copied = model<boolean>(false);
 
     public async ngOnInit(): Promise<void> {
-        await this.gameStore.init();
+        await this.gamesStore.init();
 
         this.searchService.onSearchSubmit().subscribe((data: any) => {
             console.log(data.term);
         });
     }
 
-    public goToLogin(): void {
-        this.router.navigate(["/users/login"]);
-    }
-
-    public goToHome(): void {
-        this.router.navigate(["/home"]);
-    }
-
     public copyToClipboard(): void {
         navigator.clipboard.writeText(this.usersStore.fullNickname());
         this.copied.set(true);
+    }
+
+    public redirect(url: string): void {
+        this.router.navigate([url]);
     }
 }
