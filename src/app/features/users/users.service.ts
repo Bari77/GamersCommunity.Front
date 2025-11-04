@@ -11,11 +11,8 @@ export class UsersService extends BaseService {
         super("/mainsite/users");
     }
 
-    public loadUser(idKeycloak: string, nickname: string | undefined = undefined): Observable<User | null> {
-        return this.post<UserDto, User>(User, "actions/Load", {
-            idKeycloak: idKeycloak,
-            nickname: nickname,
-        } as LoadRequestDto);
+    public loadUser(data: LoadRequestDto): Observable<User | null> {
+        return this.post<UserDto, User>(User, "actions/Load", data);
     }
 
     public getUser(id: number): Observable<User> {

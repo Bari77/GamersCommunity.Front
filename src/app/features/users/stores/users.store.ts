@@ -3,13 +3,15 @@ import { Router } from "@angular/router";
 import { NbAuthJWTToken, NbAuthService, NbTokenService } from "@nebular/auth";
 import { NbDialogService, NbMenuItem, NbMenuService } from "@nebular/theme";
 import { JwtUtils } from "@shared/utils/jwt.utils";
-import { filter, finalize, map } from "rxjs";
+import { filter, finalize, map, Observable, Subscriber } from "rxjs";
 import { NicknameDialogComponent } from "../components/nickname-dialog/nickname-dialog.component";
+import { LoadRequestDto } from "../dto/load.dto";
 import { User } from "../models/user.model";
 import { UsersService } from "../users.service";
 
 @Injectable({ providedIn: "root" })
 export class UsersStore {
+    public readonly firstLoading = computed(() => this.$firstLoading());
     public readonly loading = computed(() => this.$loading());
     public readonly user = computed(() => this.$user());
     public readonly isLoggedIn = computed(() => !!this.$user());
@@ -24,6 +26,7 @@ export class UsersStore {
     private readonly menuService = inject(NbMenuService);
     private readonly router = inject(Router);
 
+    private readonly $firstLoading = signal<boolean>(false);
     private readonly $loading = signal<boolean>(false);
     private readonly $user = signal<User | null>(null);
     private readonly $menuItems = signal<NbMenuItem[]>([
@@ -32,16 +35,18 @@ export class UsersStore {
     ]);
 
     public constructor() {
-        this.initializeFromRedirect();
-
         this.authService.isAuthenticated().subscribe((authenticated) => {
-            if (!authenticated) return;
+            if (!authenticated) {
+                // Not authenticated but maybe come from Keycloak redirection
+                this.initializeFromRedirect();
+                return;
+            }
 
             this.authService.getToken().subscribe({
                 next: (token) => {
                     if (!token?.getValue()) return;
                     const payload = JwtUtils.decodeJwt(token.getValue());
-                    this.loadUserFromPayload(payload);
+                    this.loadUserFromPayload(payload).subscribe();
                 },
                 error: (err) => console.error("Auth check error:", err),
             });
@@ -76,54 +81,77 @@ export class UsersStore {
     public logout(): void {
         this.$loading.set(true);
         this.router.navigate(["/users/logout"]);
-        this.authService.logout("keycloak").subscribe({
-            next: () => {
-                this.$loading.set(false);
-                this.router.navigate(["/home"]);
-                this.$user.set(null);
-            },
-            error: () => {
-                this.$loading.set(false);
-            },
-        });
+        this.authService
+            .logout("keycloak")
+            .pipe(finalize(() => this.$loading.set(false)))
+            .subscribe({
+                next: () => {
+                    this.router.navigate(["/home"]);
+                    this.$user.set(null);
+                },
+            });
     }
 
     private initializeFromRedirect(): void {
         const token = JwtUtils.extractAccessTokenFromHash();
         if (!token) return;
 
+        this.$firstLoading.set(true);
         const jwt = new NbAuthJWTToken(token, "keycloak");
         this.tokenService.set(jwt);
 
         window.history.replaceState({}, document.title, window.location.pathname);
 
         const payload = JwtUtils.decodeJwt(token);
-        this.loadUserFromPayload(payload);
+        this.loadUserFromPayload(payload)
+            .pipe(
+                finalize(() => {
+                    this.$firstLoading.set(false);
+                }),
+            )
+            .subscribe();
     }
 
-    private loadUserFromPayload(payload: any): void {
-        const idKeycloak = payload?.sub;
-        const nickname = payload?.preferred_username;
+    private loadUserFromPayload(payload: any): Observable<void> {
+        return new Observable<void>((sub: Subscriber<void>) => {
+            if (!payload?.sub) {
+                sub.error("Invalid token or without Keycloak identifier.");
+                sub.complete();
+                return;
+            }
 
-        if (!idKeycloak) {
-            console.error("Token invalide ou sans identifiant Keycloak.");
-            return;
-        }
+            const data: LoadRequestDto = {
+                idKeycloak: payload?.sub,
+            };
 
-        this.$loading.set(true);
-        this.usersService
-            .loadUser(idKeycloak, nickname)
-            .pipe(finalize(() => this.$loading.set(false)))
-            .subscribe({
-                next: (user) => this.$user.set(user),
-                error: (err) => {
-                    console.error("Failed to load user:", err);
-                    this.promptForNickname(idKeycloak);
-                },
-            });
+            this.$loading.set(true);
+            this.usersService
+                .loadUser(data)
+                .pipe(
+                    finalize(() => {
+                        this.$loading.set(false);
+                        sub.complete();
+                    }),
+                )
+                .subscribe({
+                    next: (user) => {
+                        this.$user.set(user);
+                        sub.next();
+                    },
+                    error: (err) => {
+                        if (err.error?.Code === "NICKNAME_MANDATORY") {
+                            // Signup, we create a new user with mail from SSO
+                            // and input nickname
+                            data.mail = payload.email;
+                            this.promptForNickname(data);
+                        }
+                        sub.error(err);
+                    },
+                });
+        });
     }
 
-    private promptForNickname(idKeycloak: string): void {
+    private promptForNickname(data: LoadRequestDto): void {
         const dialogRef = this.dialogService.open(NicknameDialogComponent, {
             closeOnBackdropClick: false,
             closeOnEsc: false,
@@ -132,7 +160,8 @@ export class UsersStore {
         dialogRef.onClose.subscribe((nickname: string | null) => {
             if (!nickname) return;
 
-            this.usersService.loadUser(idKeycloak, nickname).subscribe({
+            data.nickname = nickname;
+            this.usersService.loadUser(data).subscribe({
                 next: (user) => this.$user.set(user),
                 error: (err) => console.error("Signup failed:", err),
             });

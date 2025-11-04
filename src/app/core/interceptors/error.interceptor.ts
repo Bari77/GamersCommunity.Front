@@ -13,7 +13,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
             let msg = $localize`:@@error.httpCode.internalErrorMsg:An error occurred while processing your request. Please try again or contact an administrator.`;
             let title = $localize`:@@error.httpCode.internalErrorTitle:Error`;
 
-            if (error.status === 0) {
+            if (error.status === 0 || error.status === 504) {
                 msg = $localize`:@@error.httpCode.offlineMsg:The site is currently unavailable.`;
                 title = $localize`:@@error.httpCode.offlineTitle:Network error`;
                 toastr.danger(msg, title, { duration: 0 });
@@ -46,7 +46,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
             if (error.status < 500) {
                 toastr.warning(msg, title);
-            } else {
+            } else if (error.error.Code !== "NICKNAME_MANDATORY") {
                 toastr.danger(msg, title);
             }
 

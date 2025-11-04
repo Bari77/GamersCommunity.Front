@@ -1,17 +1,17 @@
-@if (isLoading()) {
-    <app-loading></app-loading>
-} @else {
-    <nb-layout>
-        <nb-layout-header fixed>
-            <app-header></app-header>
-        </nb-layout-header>
+<nb-layout>
+    <nb-layout-header fixed>
+        <app-header></app-header>
+    </nb-layout-header>
 
-        <nb-layout-column>
+    <nb-layout-column>
+        @if (isLoading()) {
+            <app-loading></app-loading>
+        } @else {
             <router-outlet />
-        </nb-layout-column>
+        }
+    </nb-layout-column>
 
-        <nb-layout-footer fixed>
-            <app-footer></app-footer>
-        </nb-layout-footer>
-    </nb-layout>
-}
+    <nb-layout-footer fixed>
+        <app-footer></app-footer>
+    </nb-layout-footer>
+</nb-layout>

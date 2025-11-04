@@ -1,4 +1,4 @@
-<nb-layout-header fixed [nbSpinner]="usersStore.loading()">
+<nb-layout-header fixed>
     <div class="header-content">
         <div class="left">
             <img
@@ -12,6 +12,7 @@
             />
 
             <nb-search
+                [nbSpinner]="usersStore.firstLoading()"
                 nbTooltip="Search"
                 i18n-nbTooltip="@@core.header.search"
                 nbTooltipPlacement="bottom"
@@ -53,7 +54,7 @@
                     nbContextMenuTrigger="hover"
                 ></app-avatar>
             } @else {
-                <button (click)="redirect('users/login')" nbButton ghost>
+                <button [nbSpinner]="usersStore.firstLoading()" (click)="redirect('users/login')" nbButton ghost>
                     <nb-icon
                         icon="power-outline"
                         pack="eva"
