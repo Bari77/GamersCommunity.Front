@@ -18,5 +18,5 @@ export class AppComponent {
     public readonly userStore = inject(UsersStore);
     public readonly gamesStore = inject(GamesStore);
 
-    public isLoading = computed<boolean>(() => this.userStore.firstLoading() && this.gamesStore.loading());
+    public isLoading = computed<boolean>(() => this.userStore.redirectLoading() || this.gamesStore.loading());
 }

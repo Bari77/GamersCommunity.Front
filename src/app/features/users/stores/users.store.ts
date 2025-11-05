@@ -11,7 +11,7 @@ import { UsersService } from "../users.service";
 
 @Injectable({ providedIn: "root" })
 export class UsersStore {
-    public readonly firstLoading = computed(() => this.$firstLoading());
+    public readonly redirectLoading = computed(() => this.$redirectLoading());
     public readonly loading = computed(() => this.$loading());
     public readonly user = computed(() => this.$user());
     public readonly isLoggedIn = computed(() => !!this.$user());
@@ -26,7 +26,7 @@ export class UsersStore {
     private readonly menuService = inject(NbMenuService);
     private readonly router = inject(Router);
 
-    private readonly $firstLoading = signal<boolean>(false);
+    private readonly $redirectLoading = signal<boolean>(false);
     private readonly $loading = signal<boolean>(false);
     private readonly $user = signal<User | null>(null);
     private readonly $menuItems = signal<NbMenuItem[]>([
@@ -96,7 +96,7 @@ export class UsersStore {
         const token = JwtUtils.extractAccessTokenFromHash();
         if (!token) return;
 
-        this.$firstLoading.set(true);
+        this.$redirectLoading.set(true);
         const jwt = new NbAuthJWTToken(token, "keycloak");
         this.tokenService.set(jwt);
 
@@ -106,7 +106,7 @@ export class UsersStore {
         this.loadUserFromPayload(payload)
             .pipe(
                 finalize(() => {
-                    this.$firstLoading.set(false);
+                    this.$redirectLoading.set(false);
                 }),
             )
             .subscribe();

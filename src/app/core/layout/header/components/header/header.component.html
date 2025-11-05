@@ -12,7 +12,7 @@
             />
 
             <nb-search
-                [nbSpinner]="usersStore.firstLoading()"
+                [nbSpinner]="usersStore.redirectLoading() || usersStore.loading()"
                 nbTooltip="Search"
                 i18n-nbTooltip="@@core.header.search"
                 nbTooltipPlacement="bottom"
@@ -54,7 +54,12 @@
                     nbContextMenuTrigger="hover"
                 ></app-avatar>
             } @else {
-                <button [nbSpinner]="usersStore.firstLoading()" (click)="redirect('users/login')" nbButton ghost>
+                <button
+                    [nbSpinner]="usersStore.redirectLoading() || usersStore.loading()"
+                    (click)="redirect('users/login')"
+                    nbButton
+                    ghost
+                >
                     <nb-icon
                         icon="power-outline"
                         pack="eva"
