@@ -60,7 +60,6 @@ export const appConfig: ApplicationConfig = {
             NbInputModule,
             NbIconModule,
 
-            // Nebular Auth (branché sur Keycloak)
             NbAuthModule.forRoot({
                 strategies: [
                     NbOAuth2AuthStrategy.setup({
@@ -71,7 +70,7 @@ export const appConfig: ApplicationConfig = {
                             endpoint: "/auth",
                             responseType: NbOAuth2ResponseType.TOKEN,
                             scope: "openid profile email offline_access",
-                            redirectUri: "http://localhost:4200/",
+                            redirectUri: location.origin,
                             requireValidToken: true,
                         },
                         token: {
