@@ -15,6 +15,16 @@ export const appRoutes: Routes = [
         loadChildren: () => import("./features/users/users.routes").then((r) => r.usersRoutes),
     },
     {
+        path: "world-of-warcraft",
+        loadChildren: () =>
+            import("./features/world-of-warcraft/world-of-warcraft.routes").then((r) => r.worldOfWarcraftRoutes),
+    },
+    {
+        path: "league-of-legends",
+        loadChildren: () =>
+            import("./features/league-of-legends/league-of-legends.routes").then((r) => r.leagueOfLegendsRoutes),
+    },
+    {
         path: "offline",
         loadComponent: () =>
             import("@core/layout/splash/components/offline/offline.component").then((m) => m.OfflineComponent),
