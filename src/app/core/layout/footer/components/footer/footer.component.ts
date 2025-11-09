@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, computed } from "@angular/core";
 
 @Component({
     standalone: true,
@@ -7,4 +7,6 @@ import { Component } from "@angular/core";
     templateUrl: "./footer.component.html",
     styleUrl: "./footer.component.scss",
 })
-export class FooterComponent {}
+export class FooterComponent {
+    public year = computed(() => new Date().getFullYear());
+}
