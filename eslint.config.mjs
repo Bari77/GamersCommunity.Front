@@ -1,6 +1,6 @@
 import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
-import { defineConfig, globalIgnores } from "eslint/config";
+import { defineConfig } from "eslint/config";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -13,8 +13,9 @@ const compat = new FlatCompat({
 });
 
 export default defineConfig([
-    globalIgnores(["*.js"]),
     {
+        ignores: [".angular/", "dist/", "node_modules/"],
+
         files: ["**/*.ts"],
 
         extends: compat.extends(
