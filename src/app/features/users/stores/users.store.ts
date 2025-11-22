@@ -1,5 +1,6 @@
 import { computed, inject, Injectable, signal } from "@angular/core";
 import { Router } from "@angular/router";
+import { PermissionsService } from "@core/services/permissions.service";
 import { NbAuthJWTToken, NbAuthService, NbTokenService } from "@nebular/auth";
 import { NbDialogService, NbMenuItem, NbMenuService } from "@nebular/theme";
 import { JwtUtils } from "@shared/utils/jwt.utils";
@@ -24,15 +25,13 @@ export class UsersStore {
     private readonly usersService = inject(UsersService);
     private readonly dialogService = inject(NbDialogService);
     private readonly menuService = inject(NbMenuService);
+    private readonly permissionsService = inject(PermissionsService);
     private readonly router = inject(Router);
 
     private readonly $redirectLoading = signal<boolean>(false);
     private readonly $loading = signal<boolean>(false);
     private readonly $user = signal<User | null>(null);
-    private readonly $menuItems = signal<NbMenuItem[]>([
-        { data: "profile", title: $localize`:@@core.header.menu.profile:Profile`, icon: "person-outline" },
-        { data: "logout", title: $localize`:@@core.header.menu.logout:Logout`, icon: "power-outline" },
-    ]);
+    private readonly $menuItems = signal<NbMenuItem[]>(this.getMenuItems());
 
     public constructor() {
         this.authService.isAuthenticated().subscribe((authenticated) => {
@@ -166,5 +165,14 @@ export class UsersStore {
                 error: (err) => console.error("Signup failed:", err),
             });
         });
+    }
+
+    private getMenuItems(): NbMenuItem[] {
+        const result = [
+            { data: "profile", title: $localize`:@@core.header.menu.profile:Profile`, icon: "person-outline" },
+            { data: "logout", title: $localize`:@@core.header.menu.logout:Logout`, icon: "power-outline" },
+        ];
+
+        return result;
     }
 }

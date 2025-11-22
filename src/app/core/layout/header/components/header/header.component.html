@@ -49,7 +49,7 @@
                 </div>
                 <app-avatar
                     [src]="usersStore.user()?.avatarUrl"
-                    [nbContextMenu]="usersStore.menuItems()"
+                    [nbContextMenu]="usersStore.menuItems()!"
                     nbContextMenuTag="header-user"
                     nbContextMenuTrigger="hover"
                 ></app-avatar>

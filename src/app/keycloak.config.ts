@@ -1,11 +1,11 @@
 import { EnvironmentProviders } from "@angular/core";
 import { environment } from "environments/environment";
 import {
-    provideKeycloak,
-    createInterceptorCondition,
-    IncludeBearerTokenCondition,
-    INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
     AutoRefreshTokenService,
+    createInterceptorCondition,
+    INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
+    IncludeBearerTokenCondition,
+    provideKeycloak,
     UserActivityService,
     withAutoRefreshToken,
 } from "keycloak-angular";
@@ -35,7 +35,7 @@ export const provideKeycloakAngular = (): EnvironmentProviders =>
         },
         features: [
             withAutoRefreshToken({
-                onInactivityTimeout: "logout",
+                onInactivityTimeout: "none",
                 sessionTimeout: 600_000,
             }),
         ],

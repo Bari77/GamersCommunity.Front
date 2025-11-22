@@ -11,6 +11,10 @@ import { provideAnimations } from "@angular/platform-browser/animations";
 import { AuthGuard } from "@core/guards/auth.guard";
 import { UnauthGuard } from "@core/guards/unauth.guard";
 import { errorInterceptor } from "@core/interceptors/error.interceptor";
+import { PermissionsService } from "@core/services/permissions.service";
+import { RoleService } from "@core/services/role.service";
+import { accessControlLol } from "@features/league-of-legends/nebular.security";
+import { accessControlWow } from "@features/world-of-warcraft/nebular.security";
 import {
     NbAuthJWTInterceptor,
     NbAuthJWTToken,
@@ -19,6 +23,7 @@ import {
     NbOAuth2ResponseType,
 } from "@nebular/auth";
 import { NbEvaIconsModule } from "@nebular/eva-icons";
+import { NbRoleProvider, NbSecurityModule } from "@nebular/security";
 import {
     NbButtonModule,
     NbCardModule,
@@ -33,6 +38,7 @@ import {
 } from "@nebular/theme";
 import { environment } from "environments/environment";
 import { appRoutes } from "./app.routes";
+import { accessControlGlobal } from "./nebular.security";
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -60,6 +66,7 @@ export const appConfig: ApplicationConfig = {
             NbInputModule,
             NbIconModule,
 
+            // Nebular Auth
             NbAuthModule.forRoot({
                 strategies: [
                     NbOAuth2AuthStrategy.setup({
@@ -106,10 +113,21 @@ export const appConfig: ApplicationConfig = {
                     },
                 },
             }),
+
+            // Nebular Security
+            NbSecurityModule.forRoot({
+                accessControl: {
+                    ...accessControlGlobal,
+                    ...accessControlLol,
+                    ...accessControlWow,
+                },
+            }),
         ),
 
         // Interceptor JWT Nebular (ajoute automatiquement Authorization: Bearer ...)
         { provide: HTTP_INTERCEPTORS, useClass: NbAuthJWTInterceptor, multi: true },
+        { provide: NbRoleProvider, useClass: RoleService },
+        PermissionsService,
         AuthGuard,
         UnauthGuard,
     ],

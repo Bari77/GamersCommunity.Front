@@ -26,6 +26,7 @@
         "@angular/router": "20.3.13",
         "@nebular/auth": "^16.0.0",
         "@nebular/eva-icons": "16.0.0",
+        "@nebular/security": "^16.0.0",
         "@nebular/theme": "16.0.0",
         "keycloak-angular": "20.0.0",
         "keycloak-js": "26.2.1",
