@@ -17,8 +17,8 @@ import { accessControlLol } from "@features/league-of-legends/nebular.security";
 import { accessControlWow } from "@features/world-of-warcraft/nebular.security";
 import {
     NbAuthJWTInterceptor,
-    NbAuthJWTToken,
     NbAuthModule,
+    NbAuthOAuth2JWTToken,
     NbOAuth2AuthStrategy,
     NbOAuth2ResponseType,
 } from "@nebular/auth";
@@ -75,13 +75,15 @@ export const appConfig: ApplicationConfig = {
                         clientId: environment.idpClientId,
                         authorize: {
                             endpoint: "/auth",
-                            responseType: NbOAuth2ResponseType.TOKEN,
+                            redirectUri: `${location.origin}/auth/callback`,
+                            responseType: NbOAuth2ResponseType.CODE,
                             scope: "openid profile email offline_access",
-                            redirectUri: location.origin,
-                            requireValidToken: true,
                         },
                         token: {
-                            class: NbAuthJWTToken,
+                            endpoint: "/token",
+                            redirectUri: `${location.origin}/auth/callback`,
+                            grantType: "authorization_code",
+                            class: NbAuthOAuth2JWTToken,
                             requireValidToken: true,
                         },
                         refresh: {

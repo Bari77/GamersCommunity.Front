@@ -7,6 +7,10 @@ export const appRoutes: Routes = [
         pathMatch: "full",
     },
     {
+        path: "auth",
+        loadChildren: () => import("./features/auth/auth.routes").then((r) => r.authRoutes),
+    },
+    {
         path: "home",
         loadChildren: () => import("./features/home/home.routes").then((r) => r.homeRoutes),
     },
